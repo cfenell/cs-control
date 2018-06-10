@@ -8,7 +8,8 @@ cs_setsound
 
 Usage: cs_setsound FILE
 
-where FILE is a file as saved with cs_getsound
+where FILE is a sound configuration file.
+Format: see examples/patch1 included with the source.
 """
 
 if(len(sys.argv)!=2):

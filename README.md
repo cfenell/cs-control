@@ -15,10 +15,12 @@ Python with PyGame Midi.
 
 See the Reface MIDI implementation document available at <URL?>
 
-
 # Dependencies
 * Python 2.x
-* PyGame MIDI
+* ConfigParser, Debian package python-configparser
+* MIDO and MIDI backend, see https://mido.readthedocs.io/.
+  Debian packages: python-mido, libportmidi0
+
 
 # Installation
 A setup script is provided. Typically

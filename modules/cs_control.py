@@ -1,14 +1,15 @@
 class CSControl:
 
 ### Utility module for reading and writing Yamaha Reface CS synthesizer
-### tone generator settings via MIDI SysEx
+### tone generator settings via MIDI.
 ### (C) Carl-Fredrik Enell 2018
 
     ## There are several MIDI implementations for Python.
-    ## PyGame selected here since it is commonly available.
-    from pygame import midi
-    
-    
+    ## MIDO seemed to be the most versatile.
+    ## Note that MIDO is a frontend that requires an actual backend
+    ## such as portmidi, rtmidi or pygames.
+    import mido
+        
     def __init__(self,channel):
 
         ## Reface CS MIDI implementation configurations.
@@ -17,9 +18,9 @@ class CSControl:
         
         # Dict of Reface CS tone generator controls.
         # NB. There are two ways to control the tone generator:
-        # 1. MIDI Control Change message- works only when MIDI Control is enabled
-        # 2. SysEx MIDI parameter
-        # Usinv Control Change here, so make sure MIDI control is ON.
+        # Control Change and SysEx messages.
+        # Using Control Change messages here. This requires
+        # MIDI control to be enabled- see the Reface manual.
         self.sound_control = {
             'LFOAssign'   : 78,
             'LFODepth'  : 77,
@@ -68,29 +69,18 @@ class CSControl:
         }
 
 
-        
-        ## Start MIDI communication
-        self.midi.init()
 
         ## Enumerate devices
-        found_in=False
-        found_out=False
-        for mididev in range(self.midi.get_count()):
-            (mididriver,midiname,midiin,midiout,midiopen) = self.midi.get_device_info(mididev)
-            if (midiname.find('reface CS MIDI') > -1):
-                if (midiin == 1):
-                    self.Input=self.midi.Input(mididev)
-                    found_in=True
-                if (midiout == 1):
-                    self.Output=self.midi.Output(mididev,0)
-                    found_out=True
+        if ('reface CS MIDI 1' in self.mido.get_input_names()):
+            self.Input=self.mido.open_input('reface CS MIDI 1')
+        else:
+            raise IOError('No Reface device found!')
 
-        if(not(found_in)):
-            raise IOError('No Reface CS input device found!')
-
-        if(not(found_out)):
-            raise IOError('No Reface CS output device found!')
-
+        if ('reface CS MIDI 1' in self.mido.get_output_names()):
+            self.Output=self.mido.open_output('reface CS MIDI 1')
+        else:
+            raise IOError('No Reface device found!')
+      
         # store selected MIDI channel no
         self.channel=channel
         
@@ -100,13 +90,12 @@ class CSControl:
 
     def cswrite(self,sound_dict):
         ## Write a dictionary of sound parameters to Yamaha Reface CS
-       
-        # Initialise message
-        status=0xB0 + self.channel # Control change channel N 
-        msg=[]
-
-        # Build control message
+    
+        msg=self.mido.Message('control_change')
+        msg.channel=self.channel
+        
         for (controlname, value) in sound_dict.iteritems():
+
             # Check values
             if (controlname=='LFOAssign'):
                 value=self.lfo_assign[value]
@@ -117,20 +106,21 @@ class CSControl:
             else:
                 value=int(value)
             assert value in range(0,128) # Byte value 0..127
-                
-            # message list: [[[status,control,value],timestamp],...]
-            out=[[status,self.sound_control[controlname],value],0] # timestamp 0 = immediately
-            msg.append(out)
+            
+            msg.control=self.sound_control[controlname]
+            msg.value=value
 
-        try:
-            self.Output.write(msg)
-        except:
-            raise IOError('Could not write to Reface CS device')
+            try:
+                self.Output.send(msg)
+            except:
+                raise IOError('Could not write to Reface CS device')
 
 
     def __enter__(self):
         return self
 
     def __exit__(self):
-        self.midi.quit()
+        self.Input.close()
+        self.Output.close()
+
         
