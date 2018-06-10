@@ -29,9 +29,9 @@ $sudo python setup.py install
 
 
 # Usage
-cs_setsound <FILE>: read sound settings from FILE and write to Reface CS
+cs_setsound FILE: read sound settings from FILE and write to Reface CS
 
-cs_getsound <FILE>: read sound settings from Reface CS and write to FILE
+cs_getsound FILE: read sound settings from Reface CS and write to FILE
   
 # File format
 See the included example in examples/patch1
