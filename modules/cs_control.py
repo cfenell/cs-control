@@ -130,9 +130,11 @@ class CSControl:
                     # Footer
                     break
                 else:
-                    return list(msg_in.data)
-            
+                    settings=list(msg_in.data)
+                    
             count=count+1
+        
+        return settings
 
     def csreadsound(self):
 
