@@ -1,0 +1,22 @@
+[main]
+channel:	1
+
+[sound]
+LFOAssign: PITCH
+LFODepth: 30
+LFOSpeed: 10
+Portamento: 0
+OSCType: PULSE
+OSCTexture: 64
+OSCMod: 64
+FILTERCutoff: 127
+FILTERResonance: 8
+EGBalance: 0
+EGA: 0
+EGD: 0
+EGS: 127
+EGR: 64
+EFFECTType: CHO_FLA
+EFFECTDepth: 64
+EFFECTRate: 10
+

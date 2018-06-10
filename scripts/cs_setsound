@@ -1,0 +1,36 @@
+#! /usr/bin/python
+import sys
+import ConfigParser
+from cs_control import CSControl
+
+usage="""
+cs_setsound
+
+Usage: cs_setsound FILE
+
+where FILE is a file as saved with cs_getsound
+"""
+
+if(len(sys.argv)!=2):
+    print(usage)
+    sys.exit(1)
+
+
+# Read settings file    
+config=ConfigParser.RawConfigParser()
+config.optionxform=str
+config.read(sys.argv[1])
+
+
+# init
+channel=config.getint('main','channel')
+cc=CSControl(channel)
+
+# build sound parameter dictionary from config file
+sound={}
+for (setting,value) in config.items('sound'):
+    sound.update({setting:value})
+
+# Set sound generator parameters
+cc.cswrite(sound)
+del(cc)
