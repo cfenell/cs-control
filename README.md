@@ -10,8 +10,8 @@ sound parameters. There is also an online service, SoundMondo, that
 can share settings online using Web Midi in Google Chrome. It works
 but requires internet access and registration.
 
-Here are therefore two simple command line programs written in
-Python with PyGame Midi.
+Thus, here are two simple command line programs to read and write 
+Reface CS sound settings.
 
 See the Reface MIDI implementation document available at <URL?>
 
@@ -29,10 +29,10 @@ $sudo python setup.py install
 
 
 # Usage
-cs_setsound <FILE>: read sound settings from FILE and write to Reface CS
+'''cs_setsound <FILE>''': read sound settings from FILE and write to Reface CS
 
-TODO: add cs_getsound <FILE>: read sound settings from Reface CS and store to FILE
-
+'''cs_getsound <FILE>''': read sound settings from Reface CS and write to FILE
+  
 # File format
 See the included example in examples/patch1
 
