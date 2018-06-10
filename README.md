@@ -19,7 +19,7 @@ See the Reface MIDI implementation document available at <URL?>
 * Python 2.x
 * ConfigParser, Debian package python-configparser
 * MIDO and MIDI backend, see https://mido.readthedocs.io/.
-  Debian packages: python-mido, libportmidi0
+  Debian packages: python-mido, libportmidi0, libportmidi-dev
 
 
 # Installation
