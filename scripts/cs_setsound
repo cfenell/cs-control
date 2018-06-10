@@ -25,12 +25,12 @@ config.read(sys.argv[1])
 
 # init
 channel=config.getint('main','channel')
-cc=CSControl(channel)
+cc=CSControl(channel-1) # MIDO numbers channels 0:15
 
 # build sound parameter dictionary from config file
 sound={}
-for (setting,value) in config.items('sound'):
-    sound.update({setting:value})
+for (controlname,value) in config.items('sound'):
+    sound[controlname]=value
 
 # Set sound generator parameters
 cc.cswrite(sound)

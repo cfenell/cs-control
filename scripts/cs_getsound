@@ -1,0 +1,49 @@
+#! /usr/bin/python
+
+import sys
+import ConfigParser
+from cs_control import CSControl
+
+usage="""
+cs_getsound
+
+Usage: cs_getsound FILE
+
+where FILE is a writable file path.
+"""
+if(len(sys.argv)!=2):
+    print(usage)
+    sys.exit(1)
+    
+out_channel=1 # Default. Todo: read from general config?
+cc=CSControl(out_channel-1) # MIDO numbers channels 0:15
+
+# Read sound settings
+(channel,sound)=cc.csreadsound()
+channel=channel+1 #should just return the above out_channel
+
+# Build config object
+config=ConfigParser.RawConfigParser()
+config.optionxform=str
+
+config.add_section('main')
+config.set('main','channel',channel)
+
+config.add_section('sound')
+for param in sound.items():
+    config.set('sound',*param)
+
+# Write config to file
+print("Writing config to %s" % sys.argv[1])
+try:
+    confFile=open(sys.argv[1],'w')
+except:
+    raise IOError('Cannot open output file!')
+
+config.write(confFile)
+confFile.close()
+
+
+
+
+

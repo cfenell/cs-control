@@ -10,7 +10,7 @@ class CSControl:
     ## such as portmidi, rtmidi or pygames.
     import mido
         
-    def __init__(self,channel):
+    def __init__(self,channel=0):
 
         ## Reface CS MIDI implementation configurations.
         ## See the MIDI implementation manual, available online.
@@ -50,6 +50,14 @@ class CSControl:
             'OSC': 127,
         }
 
+        self.lfo_return = {
+            0: 'OFF',
+            1: 'AMP',
+            2: 'FILTER',
+            3: 'PITCH',
+            4: 'OSC'
+        }
+        
         # Reface CS oscillator types
         self.osc_type = {
             'SAW'  : 0,
@@ -59,6 +67,14 @@ class CSControl:
             'FM'   : 127
         }
 
+        self.osc_return = {
+            0: 'SAW',
+            1: 'PULSE',
+            2: 'SYNC',
+            3: 'RING',
+            4: 'FM'
+        }
+
         # Reface CS effect types
         self.eff_type = {
             'DIST'   : 0,
@@ -66,6 +82,14 @@ class CSControl:
             'PHASER' : 64,
             'DELAY'  : 95,
             'OFF'    : 127
+        }
+
+        self.eff_return = {
+            0:'DIST',
+            1:'CHO_FLA',
+            2:'PHASER',
+            3:'DELAY',
+            4:'OFF'
         }
 
 
@@ -85,9 +109,74 @@ class CSControl:
         self.channel=channel
         
     ### Main in and out functions        
-    def csread(self):
-        pass #FIXME
+    def csreadsysex(self,request):
 
+        count=1
+        msg=self.mido.Message('sysex',data=request)
+        
+        while True:
+
+            if (count%100==0):
+                #Retry request
+                self.Output.send(msg)
+
+            # Get reply
+            msg_in=self.Input.receive()
+            if msg_in.type=='sysex':
+                if msg_in.data[0:11]  == tuple((67, 0, 127, 28, 0, 4, 3, 14, 15, 0, 96)):
+                    # Header
+                    pass
+                elif msg_in.data[0:11] == tuple((67, 0, 127, 28, 0, 4, 3, 15, 15, 0, 95)):
+                    # Footer
+                    break
+                else:
+                    return list(msg_in.data)
+            
+            count=count+1
+
+    def csreadsound(self):
+
+        # Sysex tone generator dump request
+        dumpreq=[0x43,0x20,0x7F,0x1C,0x03,0x0E,0x0F,0x00]   
+        dump=self.csreadsysex(dumpreq)
+        dump=dump[12:] # Sound settings
+ 
+        # Build sound dict
+        sound_dict={}
+        for controlname in ['LFOAssign',  
+                            'LFODepth',
+                            'LFOSpeed',
+                            'Portamento',
+                            'OSCType',
+                            'OSCTexture',
+                            'OSCMod',
+                            'FILTERCutoff',
+                            'FILTERResonance',
+                            'EGBalance',
+                            'EGA',
+                            'EGD', 
+                            'EGS', 
+                            'EGR', 
+                            'EFFECTType', 
+                            'EFFECTDepth',
+                            'EFFECTRate']:
+
+            value=int(dump.pop(0))
+
+            # Map possible values
+            if (controlname=='LFOAssign'):
+                value=self.lfo_return[value]
+            
+            elif (controlname=='OSCType'):
+                value=self.osc_return[value]
+                
+            elif (controlname=='EFFECTType'):
+                value=self.eff_return[value]  
+        
+            sound_dict[controlname]=value
+
+        return self.channel, sound_dict
+    
     def cswrite(self,sound_dict):
         ## Write a dictionary of sound parameters to Yamaha Reface CS
     
