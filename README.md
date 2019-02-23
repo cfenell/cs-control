@@ -1,5 +1,5 @@
 # cs-control
-(C) Carl-Fredrik Enell 2018
+(C) Carl-Fredrik Enell 2019
 fredrik@kyla.kiruna.se
 
 
@@ -16,16 +16,16 @@ Reface CS sound settings.
 See the Reface MIDI implementation document available at <URL?>
 
 # Dependencies
-* Python 2.x
-* ConfigParser, Debian package python-configparser
+* Python 3
+* configparser
 * MIDO and MIDI backend, see https://mido.readthedocs.io/.
-  Debian packages: python-mido, libportmidi0, libportmidi-dev
+  Suggested Debian packages: python3-mido, python3-rtmidi
 
 
 # Installation
 A setup script is provided. Typically
 
-$sudo python setup.py install
+$sudo python3 setup.py install
 
 
 # Usage
