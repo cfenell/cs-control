@@ -1,6 +1,6 @@
-#! /usr/bin/python
+#! /usr/bin/python3
 import sys
-import ConfigParser
+from configparser import RawConfigParser
 from cs_control import CSControl
 
 usage="""
@@ -18,7 +18,7 @@ if(len(sys.argv)!=2):
 
 
 # Read settings file    
-config=ConfigParser.RawConfigParser()
+config=RawConfigParser()
 config.optionxform=str
 config.read(sys.argv[1])
 

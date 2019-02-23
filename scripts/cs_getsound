@@ -1,7 +1,7 @@
-#! /usr/bin/python
+#! /usr/bin/python3
 
 import sys
-import ConfigParser
+from configparser import RawConfigParser
 from cs_control import CSControl
 
 usage="""
@@ -23,7 +23,7 @@ cc=CSControl(out_channel-1) # MIDO numbers channels 0:15
 channel=channel+1 #should just return the above out_channel
 
 # Build config object
-config=ConfigParser.RawConfigParser()
+config=RawConfigParser()
 config.optionxform=str
 
 config.add_section('main')

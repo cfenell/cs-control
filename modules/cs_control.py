@@ -95,16 +95,26 @@ class CSControl:
 
 
         ## Enumerate devices
-        if ('reface CS MIDI 1' in self.mido.get_input_names()):
-            self.Input=self.mido.open_input('reface CS MIDI 1')
-        else:
-            raise IOError('No Reface device found!')
+        self.Input=None
+        for idev in self.mido.get_input_names():
+            if idev.lower().find('reface cs') > -1:
+                self.Input=self.mido.open_input(idev)
+                break
+        
+        if self.Input == None:
+            raise IOError('No Reface input device found!')
 
-        if ('reface CS MIDI 1' in self.mido.get_output_names()):
-            self.Output=self.mido.open_output('reface CS MIDI 1')
-        else:
-            raise IOError('No Reface device found!')
-      
+
+        self.Output=None
+        for odev in self.mido.get_input_names():
+            if odev.lower().find('reface cs') > -1:
+                self.Output=self.mido.open_output(odev)
+                break
+        
+        if self.Output == None:
+            raise IOError('No Reface output device found!')
+        
+       
         # store selected MIDI channel no
         self.channel=channel
         
@@ -184,8 +194,8 @@ class CSControl:
     
         msg=self.mido.Message('control_change')
         msg.channel=self.channel
-        
-        for (controlname, value) in sound_dict.iteritems():
+        print(sound_dict)
+        for (controlname, value) in sound_dict.items():
 
             # Check values
             if (controlname=='LFOAssign'):

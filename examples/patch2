@@ -1,0 +1,22 @@
+[main]
+channel = 1
+
+[sound]
+LFOAssign = OFF
+LFODepth = 30
+LFOSpeed = 10
+Portamento = 0
+OSCType = PULSE
+OSCTexture = 59
+OSCMod = 41
+FILTERCutoff = 72
+FILTERResonance = 82
+EGBalance = 45
+EGA = 65
+EGD = 25
+EGS = 127
+EGR = 79
+EFFECTType = CHO_FLA
+EFFECTDepth = 51
+EFFECTRate = 10
+
