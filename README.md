@@ -13,7 +13,9 @@ It works but requires internet access and registration.
 Thus, here are two simple command line utilities to read and write 
 Reface CS sound settings.
 
-See the Reface MIDI implementation document available at <URL?>
+In order for cs_setsound to work you need to enable MIDI-Control on the Reface
+CS. You can do that by holding E2 while powering on. Looper LEDs should light
+up if MIDI control is enabled. 
 
 # Dependencies
 * Python 3
